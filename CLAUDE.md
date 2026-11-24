@@ -1,4 +1,4 @@
-# CLAUDE.md — streamlit-demanda
+# CLAUDE.md — ibp-demand-dashboard
 
 Contexto para asistentes de IA que trabajen en este repositorio. Léelo antes de proponer o aplicar cambios.
 
@@ -27,7 +27,7 @@ No es una réplica visual pixel-perfect — es funcional (mismos filtros, mismos
 ## Cómo correr la app
 
 ```
-cd streamlit-demanda
+cd ibp-demand-dashboard
 .venv\Scripts\python -m streamlit run app.py
 ```
 

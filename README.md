@@ -1,4 +1,4 @@
-# streamlit-demand-planning
+# ibp-demand-dashboard
 
 Tablero de control del área de Demand Planning (Molinos). App Streamlit que replica funcionalmente dos tableros de Power BI de SAP IBP, conectada **en vivo** a SAP IBP (OData) y AWS Athena (Data Lake), con un modo demo automático como respaldo cuando esas fuentes no están disponibles.
 

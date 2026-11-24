@@ -260,6 +260,9 @@ def plananual_sap_ibp(anios, prd_atributos=None, cust_atributos=None, filtros_eq
     return _consulta_por_periodo(
         anios, "PERIODID1", ["PERIODID3", "ZPLANANUAL"], prd_atributos, cust_atributos,
         PRD_ATTRS_COMUNES, CUST_ATTRS_AREAGC, filtros_eq, filtros_neq, uom, formatear_mes=False,
+        # Cada año devuelve ~380k filas (~200 MB): con 8 workers en paralelo el
+        # pico de memoria (JSON + DataFrame) tumbó la app. 2 alcanza.
+        max_workers=2,
     )
 
 

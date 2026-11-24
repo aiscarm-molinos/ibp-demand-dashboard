@@ -30,6 +30,7 @@ from src.data.aws_categoria import categoria_producto_datalake
 from src.data import demo_data
 from src.utils.listas_periodos import periodos_historicos_mes, periodos_futuros_mes, periodid3_a_fecha
 
+PLAN_ANUAL_PRIMER_ANIO = 2025  # el Plan Anual no existe antes (ver pages/3_Plan_Anual.py)
 MESES_HISTORICOS = 24
 MESES_FUTUROS = 12
 
@@ -277,6 +278,9 @@ def get_plan_anual() -> pd.DataFrame:
     hoy = pd.Timestamp.today()
     anio_desde = hoy.year - (-(-MESES_HISTORICOS // 12))  # ceil(MESES_HISTORICOS/12)
     anio_hasta = hoy.year + (-(-MESES_FUTUROS // 12))     # ceil(MESES_FUTUROS/12)
+    # El Plan Anual recién existe desde 2025 (ver pages/3_Plan_Anual.py): pedir
+    # años anteriores solo descarga ~200 MB (380k filas) por año para tirarlos.
+    anio_desde = max(anio_desde, PLAN_ANUAL_PRIMER_ANIO)
     anios = list(range(anio_desde, anio_hasta + 1))
 
     df = plananual_sap_ibp(anios, PRD_ATRIBUTOS, CUST_ATTRS_AREAGC)

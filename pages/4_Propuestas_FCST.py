@@ -37,14 +37,25 @@ if not es_demo_categoria and "sku" in df_categoria.columns and "grupo_material_3
 filtros = render_sidebar_filters(df_ancho, key_prefix="prop")
 df_ancho_f = apply_filters(df_ancho, filtros)
 
-# Filtrado por sidebar ANTES de explotar a Tipo/Valor (ver cache.melt_historico_y_forecast) --
-# esta página sí necesita las 8 categorías completas (selector de Tipo).
-df_f = cache.melt_historico_y_forecast(df_ancho_f)
-
-tipos_disponibles = sorted(df_f["Tipo"].dropna().unique().tolist())
+# El selector de Tipo va ANTES del melt: así solo se explotan los tipos
+# elegidos (3 por default) y no las 8 categorías completas para descartarlas
+# después -- eso era lo que hacía lenta la apertura de la página.
+TIPO_HIST = "Historico Ajustado"
+tipos_disponibles = sorted([TIPO_HIST, *cache.WATERFALL_LABELS.values()])
 default_tipos = [t for t in TIPOS_DEFAULT if t in tipos_disponibles]
 tipos_elegidos = st.multiselect("Tipo", tipos_disponibles, default=default_tipos)
-df_f = df_f[df_f["Tipo"].isin(tipos_elegidos)]
+
+label_a_col = {v: k for k, v in cache.WATERFALL_LABELS.items()}
+cols_fcst = tuple(sorted(label_a_col[t] for t in tipos_elegidos if t in label_a_col))
+
+if cols_fcst or TIPO_HIST in tipos_elegidos:
+    df_f = cache.melt_historico_y_forecast(
+        df_ancho_f,
+        incluir_historico=TIPO_HIST in tipos_elegidos,
+        tipos_forecast=cols_fcst or ("__ninguno__",),
+    )
+else:
+    df_f = pd.DataFrame(columns=["Date", "Tipo", "Valor"])
 
 if df_f.empty:
     st.warning("No hay datos para los filtros seleccionados.")
